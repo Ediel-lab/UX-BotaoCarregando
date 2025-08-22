@@ -1,47 +1,27 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "./App.css";
-
-// Modal de Sucesso
-function SuccessModal({ message, onClose }) {
-  return (
-    <div className="modal-overlay" role="dialog" aria-modal="true">
-      <div className="modal-content" role="document">
-        <p>{message}</p>
-        <button className="btn" onClick={onClose}>
-          Fechar
-        </button>
-      </div>
-    </div>
-  );
-}
 
 export default function App() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
-  const [showModal, setShowModal] = useState(false);
 
   function handleClick() {
     setLoading(true);
-    setShowModal(false);
     setMessage("");
 
+    // Simula uma requisição de 2 segundos
     setTimeout(() => {
       setLoading(false);
       setMessage("Ação concluída com sucesso!");
-      setShowModal(true);
     }, 2000);
-  }
-
-  function closeModal() {
-    setShowModal(false);
-    setMessage("");
   }
 
   return (
     <div className="app-container">
       <h1 className="title">Exercício: Botão de Carregamento</h1>
+
       <p className="description">
-        Esse código simula uma operação que leva 2 segundos.
+        Esse código simula uma operação que demora 2 segundos.
       </p>
 
       <button
@@ -49,14 +29,16 @@ export default function App() {
         onClick={handleClick}
         disabled={loading}
         aria-busy={loading}
+        aria-live="polite"
       >
-        {loading && <span className="spinner" aria-hidden="true"></span>}
-        {loading ? "Enviando…" : "Enviar"}
+        {loading ? (
+          <span className="spinner" role="status" aria-hidden="true"></span>
+        ) : null}
+        {loading ? "Enviando..." : "Enviar"}
       </button>
 
-      {showModal && (
-        <SuccessModal message={message} onClose={closeModal} />
-      )}
+      {message && <p className="success" role="alert">{message}</p>}
     </div>
   );
 }
+  
